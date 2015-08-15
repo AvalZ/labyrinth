@@ -1,0 +1,16 @@
+{
+  "name": "labyrinth",
+  "version": "0.0.0",
+  "description": "Labyrinth Engine",
+  "main": "labyrinth.js",
+  "dependencies": {
+    "circular-json": "^0.1.6",
+    "express": "^4.13.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
