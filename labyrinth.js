@@ -4,7 +4,7 @@ function Labyrinth(start) {
   this.doors = [];
   
   this.currentRoom = start;
-  console.log(this.currentRoom);
+  this.currentRoom.visit();
 }
 
 Labyrinth.prototype.go = function(direction) {
@@ -13,7 +13,7 @@ Labyrinth.prototype.go = function(direction) {
 
 function Room(north, west, south, east) {
   this.id = Room.prototype.getUniqueId();
-  this.treasures = [ {'name': 'culo di gomma'}];
+  this.treasures = [];
   this.north = north;
   this.west = west;
   this.south = south;
@@ -29,16 +29,17 @@ function Door(front, back, open) {
   this.open = open;
 }
 
-Room.prototype.printWest = function() { console.log(this.west); };
 Room.prototype.id = 0;
 Room.prototype.getUniqueId = function() { return Room.prototype.id++; };
 Room.prototype.visit = function() {
-  console.log(this.description);
+  console.log(" # " + this.description + " # ");
   console.log("Direzioni possibili: ");
-  console.log("north - " + this.north);
-  console.log("west - " + this.west);
-  console.log("south - " + this.south);
-  console.log("east - " + this.east);
+	for (var property in this) {
+		var value = this[property];
+		if (this.hasOwnProperty(property) && value instanceof Room) {
+			console.log("* " + property +" - " + value);
+		}
+	}
   return this;
 };
 
@@ -67,7 +68,9 @@ var stdin = process.openStdin();
 // stdin sta in ascolto per l'evento "data" e, quando arriva,
 // prende il contenuto nel valore "d" passato alla funzione di callback
 stdin.addListener("data", function(d) {
-    l.go(d.toString().trim());
+		var command = d.toString().trim();
+		if (command === "exit" || command === "quit") process.exit();
+    l.go(command);
   });
   
   
