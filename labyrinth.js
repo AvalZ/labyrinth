@@ -11,6 +11,7 @@ Labyrinth.prototype.go = function(direction) {
   this.currentRoom = this.currentRoom[direction].visit();
 };
 
+// Room Class
 function Room(north, west, south, east) {
   this.id = Room.prototype.getUniqueId();
   this.treasures = [];
@@ -20,13 +21,6 @@ function Room(north, west, south, east) {
   this.east = east;
   
   this.description = "";
-}
-
-function Door(front, back, open) {
-  this.front = front;
-  this.back = back;
-  
-  this.open = open;
 }
 
 Room.prototype.id = 0;
@@ -42,6 +36,55 @@ Room.prototype.visit = function() {
 	}
   return this;
 };
+
+// WalledRoom class - extends Room
+function WalledRoom() {
+	Room.call(this);
+	this.north = new Wall();
+	this.west = new Wall();
+	this.south = new Wall();
+	this.east = new Wall();
+}
+
+WalledRoom.prototype = Object.create(Room.prototype);
+WalledRoom.prototype.constructor = Room;
+
+// Wall class
+function Wall() {
+}
+
+// Door class
+function Door(front, back) {
+  this.front = front;
+  this.back = back;
+  
+  this.locked = true;
+}
+
+Door.prototype.open = function(currentRoom) {
+	if (!this.locked) {
+		console.log("This door is locked");
+		if (currentRoom === front) {
+			return back
+		}
+		if (currentRoom === back) {
+			return front;
+		}
+		else {
+			return false;
+		}
+	} else {
+		if (currentRoom === front) {
+			return back
+		}
+		if (currentRoom === back) {
+			return front;
+		}
+		else {
+			return false;
+		}
+	}
+}
 
 var room1 = new Room("culo", "cicciao", undefined, "cose a caso");
 
@@ -73,13 +116,21 @@ stdin.addListener("data", function(d) {
     l.go(command);
   });
   
-  
-// var express = require('express');
-// var CircularJSON = require('circular-json');
-// var app = express();
+var express = require('express');
+var app = express();
 
-// app.get('/', function(request, response) {
-  //console.log(room1);
-// });
+var CircularJSON = require('circular-json');
+var util = require('util');
 
-// app.listen(3000);
+app.get('/', function(request, response) {
+    response.status(200).json(util.inspect(l));
+  });
+app.get('/rooms', function(request, response) {
+    response.status(200).json(util.inspect(l.rooms));
+  });
+app.get('/rooms/:id', function(request, response) {
+    console.log(request.params.id);
+    response.status(200).json(util.inspect(l.rooms.filter(function(element) {return element.id == request.params.id})[0]));
+  });
+
+app.listen(3000);
